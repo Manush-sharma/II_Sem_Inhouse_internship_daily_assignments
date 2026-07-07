@@ -46,7 +46,7 @@
 <p><b>Address:</b> <?php echo $_POST['address']; ?></p>
 
 <div class= "text-center mt-4">
-<a href="day8.html" class="btn btn-primary">Register Another Student</a>
+<a href="index.html" class="btn btn-primary">Register Another Student</a>
 </div>
 </div>
 
