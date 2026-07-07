@@ -1,50 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form</title>
-    <link rel="stylesheet" href="formstylesheets.css"/>
+<?php
 
-</head>
-<body>
-        <form action="registration.php" method="post" class="background" id="frmRegister">
-            <h1 style="color: #1E3A8A;">Registration Form</h1>
-            <p>Submit this form for Online Registration</p>
-            <label>
-                 Full Name:
-                 <br>
-            <input type="text" id="txtname" name="fullname" required placeholder="Enter your Name"/>
-            </label>
-            <br><br>
-            <label>
-                Email:
-                <br>
-            <input type="email" id="txtEmail" name="email" required placeholder="Enter your Email"/>
-            </label>
-            <br><br>
-            <label>
-                Phone No:
-            </label>
-            <label for="dtDob" class="dtDOB">Birth Date:</label>
-            <br>
-            <input type="text" id="txtphone" name="phonenumber" required placeholder="Enter your number"/>
-            <input type="date" id="dtDob" name="dtDob"/>
-            <br><br>
-            <input type="text" id="txtbranch" name="branch" required placeholder="Enter your branch"/>
-            <br><br>
-            <input type="text" id="txtbranch" name="branch" required placeholder="Enter your branch"/>
+include('db_connect.php');
 
 
-            <label for="pwdPassword">Password: </label>
-            <input type="password" id="pwdPassword" name="pwdPassword" placeholder="Enter your password"/>
-            <br><br>
-            <label for="pwdConfirmPassword">Confirm Password:</label>
-            <input type="password" id="pwdConfirmPassword" name="pwdConfirmPassword" placeholder="Confirm your password"/>
-            <br><br>
-            <input type="submit" id="btnsubmit"/>
-        </form>
+$name = mysqli_real_escape_string($conn, $_POST['fullname']);
+$email = mysqli_real_escape_string($conn, $_POST['email']);
+$phone = mysqli_real_escape_string($conn, $_POST['phonenumber']);
+$dob = mysqli_real_escape_string($conn, $_POST['dtDob']);
+
+$errors = [];
+$success = "";
+ 
+ 
+  // Name: required only
+  if ($name === '') {
+    $errors['fullname'] = 'Name is required.';
+    echo "Name is required.";
+  }
+
+  // Email: required only
+  if ($email === '') {
+    $errors['email'] = 'Email is required.';
+    echo "Email is required.";
+  }
+
+  if (empty($errors)) {
+    $success = 'Form submitted successfully.';
+
+     $sql = "INSERT INTO `user` (`ID`, `name`, `email`, `phone`, `time`, `dob`) VALUES (NULL, '$name', '$email', '$phone', current_timestamp(), '$dob')";
+
+      if (mysqli_query($conn, $sql)) {
+        echo "New record created successfully";
+         } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+  }
     
-</body>
-</html>
+    
+  }
+ 
 
+  $folderPath = "uploads/";
+  if(!is_dir($folderPath)) {
+    mkdir($folderPath, 0777, true);
+  }
+
+  if (isset($_FILES['myfile'])) {
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+
+    $extension = strtolower(pathinfo($_FILES['myfile']['name'], PATHINFO_EXTENSION));
+    $maxSize = 20 * 1024 * 1024; // 2MB
+
+     if(!in_array($extension, $allowedTypes)) {
+    echo "Error: Only JPG, PNG, GIF, and PDF files are allowed.";
+  } elseif ($_FILES['myfile']['size'] > $maxSize) {
+    echo "Error: File size exceeds the 2MB limit.";
+  } else {
+    $newFileName = uniqid() . '.' . $extension;
+    $destination = $folderPath . $newFileName;
+
+    if (move_uploaded_file($_FILES['myfile']['tmp_name'], $destination)) {
+      echo "File uploaded successfully: " . $newFileName;
+    } else {
+      echo "Error uploading file.";
+    }
+  }
+  }
+
+
+
+?>
