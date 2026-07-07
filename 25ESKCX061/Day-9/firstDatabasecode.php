@@ -8,6 +8,7 @@ $email = mysqli_real_escape_string($conn, $_POST['email']);
 $phone = mysqli_real_escape_string($conn, $_POST['phonenumber']);
 $dob = mysqli_real_escape_string($conn, $_POST['dtDob']);
 
+
 $errors = [];
 $success = "";
  
@@ -27,7 +28,7 @@ $success = "";
   if (empty($errors)) {
     $success = 'Form submitted successfully.';
 
-     $sql = "INSERT INTO `user` (`ID`, `name`, `email`, `phone`, `time`, `dob`) VALUES (NULL, '$name', '$email', '$phone', current_timestamp(), '$dob')";
+     $sql = "INSERT INTO `user` (`ID`, `name`, `email`, `phonenumber`, `time`, `dob`) VALUES (NULL, '$name', '$email', '$phone', current_timestamp(), '$dob')";
 
       if (mysqli_query($conn, $sql)) {
         echo "New record created successfully";
